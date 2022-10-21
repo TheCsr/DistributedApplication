@@ -1,17 +1,28 @@
 import numpy as np
 import random
 
+
+
+
+def dot_product(x, y):
+    """
+    A = np.array([[1,-1, 1, -1],[1, -1, 1, 1], [-1, 1, -1, 1]]) 
+    b = np.array([1, -1, -1, 1]) 
+    result = A*b = array([0, 2, 0])
+    """
+    return np.dot(x, y)
+
+    
 def transform_message(msg:str) -> np.array:
     """
     
     """
-    binary_msg = to_binary(msg)
+    binary_msg = msg_to_binary(msg)
     bipolar_msg = binary_to_bipolar(binary_msg)
     return bipolar_msg
 
 
-
-def to_binary(msg:str) -> np.array :
+def msg_to_binary(msg:str) -> np.array :
     """
     Transform a String message into a numpy array binary vector
         For each character in string message e.g = "Hello"
@@ -26,6 +37,24 @@ def to_binary(msg:str) -> np.array :
         binary_vector.extend([int(bit) for bit in list(charac_binary)]) 
     return np.array(binary_vector)
 
+def binary_to_string(binary_vector:list):
+    binary_string = ''.join([str(val) for val in binary_vector])
+    return binary_string
+
+
+def binary_to_ascii(binary_vector:list):
+    """
+    Transform binary vector e.g [1, 1, 0, 1] to integer value 
+    """
+    binary_string = ''.join([str(val) for val in binary_vector])
+    return int(binary_string, 2)
+
+def ascii_to_binary(ascii_val:int):
+    """
+    Transform ascii_value e.g 130 to binary 
+    """
+    binary_string = ''.join([str(val) for val in binary_vector])
+    return int(binary_string, 2)
 
 def binary_to_bipolar(binary_vector:np.array) -> np.array:
     """
@@ -34,7 +63,12 @@ def binary_to_bipolar(binary_vector:np.array) -> np.array:
     """
     return np.array([ val if val == 1 else -1 for val in binary_vector])
 
-
+def bipolar_to_binary(bipolar_vector:np.array) -> np.array:
+    """
+    Transform a binary vector into a bipolar vector
+    Replace every 0 value by -1
+    """
+    return np.array([ val if val == 1 else 0 for val in binary_vector])
 
 def divide_to_chunks(vector: np.array, chunk_size:int):
     """
@@ -60,10 +94,5 @@ def generate_id(dimension:int):
     return _id, _id_ascii
 
 
-def binary_to_ascii(binary_vector:list):
-    """
-    Transform binary vector e.g [1, 1, 0, 1] to integer value 
-    """
-    binary_string = ''.join([str(val) for val in binary_vector])
-    return int(binary_string, 2)
+
 

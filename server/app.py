@@ -1,9 +1,9 @@
-from flask import Flask, request, render_template
-import json
-import pickle
-import numpy as np
 import os
-import time
+
+import json
+import numpy as np
+
+from flask import Flask, request, render_template
 
 
 app = Flask(__name__)
@@ -17,6 +17,9 @@ def index():
 
 @app.route('/sendData', methods=['POST'])
 def post_data()
+    """
+        Handle the received data from the client
+    """
     data = dummy
     return Response(response=json.dumps(data), status=200)
 
@@ -24,14 +27,24 @@ def post_data()
 @app.route('/getData', methods=['GET'])
 def get_data():
     """
-    
         Check if data base is empty or not
         Retrieve all registered keys
         Handle the received ascii ID from client through the GET request
         Trasnform ASCII Id into a bipolar vector
-
+        Compute similarity degree of DOT product between KEYS and Id
+        Select KEY with highest value
+        Retrieve data from database using KEY
+        return data chunks to the client
     """
     data = dummy
+    requested_id = np.array([1, -1, -1, 1])
+    keys = np.array([[1, 1, 1, 1], [1, -1, 1, 1], [1, -1, -1, -1]])
+
+    match_id(
+        _id = requested_id,
+        keys = keys
+    )
+
     return Response(response=json.dumps(data), status=200)
 
 
