@@ -4,7 +4,6 @@ import numpy as np
 import requests
 from flask import Flask
 from flask import Response, request
-from flask_restful import reqparse
 from Encrypt import EncryptMessage, NpEncoder
 from helper import generate_id
 
@@ -29,7 +28,7 @@ def index():
 @app.route('/post', methods=['POST'])
 def POST():
     """
-    This post method receives client's data input
+    When this method is post method is triggered, it receives client's data input from the GUI
     """
     url = f"{SERVER_ADDRESS}:{SERVER_PORT}/sendData"
     msg = EncryptMessage(
@@ -43,8 +42,21 @@ def POST():
 @app.route('/get', methods=['GET'])
 def GET():
     url = f"{SERVER_ADDRESS}:{SERVER_PORT}/getData"
-    val = requests.get(url)
-    print(val)
+    _id = request.args.get('data')
+    get_request = requests.get(url, params = {"Id": _id})
+    response = get_request.text
+
+    try:
+        data = json.loads(response)
+        a = json.loads(_id)
+    except:
+        return "REQUEST FAILED FOR SOME REASON"
+    
+    # print(response_list)
+
+    id_refined = decoder.refine_id(json.loads(idList))
+    # print(id_refined)
+
 
 
 if __name__ == "__main__":
