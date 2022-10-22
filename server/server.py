@@ -26,7 +26,6 @@ def create_connection(db_file):
     return mydb
 
 
-
 @app.route('/sendData', methods=['POST'])
 def save_data():
     """
@@ -45,7 +44,7 @@ def save_data():
     
     if not N: # Check number of entries
         N += 1
-        map_table.append({"key": chunk, "data": [chunk]}) # Add the first entry of the table
+        map_table.append({ "id": N-1 ,"key": chunk, "data": [chunk]}) # Add the first entry of the table
 
     else:
         entries = map_table # Get entries e.g entry = {1: {"key": [list], "data": [[list of lists]] }}
@@ -58,7 +57,7 @@ def save_data():
             map_table[max_sim_entry-1]["data"].append(chunk) # Append chunk data to the key that gives highest similarity (max_sim_key)
         else:
             N += 1 # Increment number of entries in the table
-            map_table.append({"key": chunk, "data": [chunk]}) # Create a new entry with the new chunk as a key
+            map_table.append({"id": N-1 ,"key": chunk, "data": [chunk]}) # Create a new entry with the new chunk as a key
 
         
     
