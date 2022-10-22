@@ -8,13 +8,11 @@ from helper import *
 
 app = Flask(__name__)
 
-dummy = {"chunks": [[-2, 0, 2, 0, 2, 0, 0, 2, -2, 0, 2, 0, 0, 0, -2, -2, 0, 2, 0, 0, 2, 2, -2, 2, 0, 0, 2, -2, -2, 0, 0, 0, 0, 0, -2, -2, 0, -2, 0, 0, -2, 2, -2, 2, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, -2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, -2, -2, 0, 2, 0, 0, 2, -2, 0, 0, -2, 0, 2, -2, 2, 2, 0, 0, 2, -2, 2, 2, -2, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]}
-
 SERVER_ADDRESS = "127.0.0.1"
 SERVER_PORT = 8080
+THRESHOLD = 10
 
 
-#global N
 global map_table
 
 map_table = {}
@@ -29,52 +27,30 @@ def save_data():
         GET all keys
     """
     N = len(map_table.keys()) # Number of entries
-
-    received_data = json.loads(request.get_json())
-    index = received_data[0] 
-    chunk = received_data[1]
+    chunk = json.loads(request.get_json())
     
     if not N: # Check number of entries
-        print("Empty")
         N += 1
-        map_table[N] = {
-            "key": chunk,
-            "data": [chunk]
-        }
+        map_table[N] = {"key": chunk, "data": [chunk]} # Add the first entry of the table
+
     else:
-        print("Not Empty")
-        keys = np.array(map_table.keys())
-        print(keys)
+        entries = map_table.values() # Get entries e.g entry = {1: {"key": [list], "data": [[list of lists]] }}
+        keys = [ entry["key"] for entry in entries] # Get keys from map table (list of lists)
 
+        # Compute similarity chunk with respect to all keys in table
+        max_sim, max_sim_key, max_sim_entry = maximum_similarity(chunk=np.array(chunk), keys= np.array(keys))
 
-        # Compare chunk with all keys in table
-        #match_chunk_to_key(chunk=chunk, keys= )
+        if max_sim > THRESHOLD: # Check if max_sim value is above threshold
+            map_table[max_sim_entry]["data"].append(chunk) # Append chunk data to the key that gives highest similarity (max_sim_key)
+        else:
+            N += 1 # Increment number of entries in the table
+            map_table[N] = {"key": chunk, "data": [chunk]} # Create a new entry with the new chunk as a key
 
-        #map_table[N] = {        }
+        print(max_sim)
     
-        #print(map_table)
+    count_data = {k: len(v["data"]) for (k, v) in map_table.items()}
+    print(count_data)
 
-    """
-    if not n_users: 
-        db[1] = {
-            "key": first_chunk,
-            "data": []
-        }
-
-
-    for chunk in received_chunks:
-        # Compute similarity(chunk, keys)
-    """        
-
-        
-    """
-    for chunk in received_chunks:
-        similarity_vector = np.dot(keys, np.array(chunk)) # Compute similarity vector!
-        over_threshold = [value for value in similarity_vector if value > threshold]
-        if over_threshold:
-            best_key_idx = np.where( similarity_vector == value)
-            best_key = keys[best_key_idx]
-    """
     return Response(response=json.dumps("Chunk received"), mimetype="application/json", status=200)
 
 
@@ -90,6 +66,7 @@ def get_data():
         Retrieve data from database using KEY
         return data chunks to the client
     """
+    
     pass
 
 

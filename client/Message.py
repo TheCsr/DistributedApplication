@@ -2,7 +2,7 @@ import numpy as np
 import json
 
 
-class EncryptMessage:
+class Message:
         
     def __init__(self, message:str, chunk_size:int):
 
@@ -18,6 +18,9 @@ class EncryptMessage:
     def encrypt(self, _id: np.array) -> list:
         encrypted_chunks =  [ (np.multiply(chunk, _id) + _id) for chunk in self.chunks] # Perform encryption on each chunk
         return encrypted_chunks # Return the encrypted chunks in a list
+
+    def decrypt(self, ):
+        pass
             
 
 # Divide original message into smaller chunks

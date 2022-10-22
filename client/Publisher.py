@@ -5,10 +5,10 @@ import numpy as np
 import random
 
 from flask import Flask, request, Response, render_template
-from Encrypt import EncryptMessage, NpEncoder
+from Message import Message, NpEncoder
 from Vector import Vector
 
-CHUNK_SIZE = 5
+CHUNK_SIZE = 1001
 
 SERVER_ADDRESS = "127.0.0.1"
 SERVER_PORT = 8080
@@ -29,7 +29,7 @@ def main(argv): # Takes as arguments the publisher network information from term
     # Render home page of publisher
     @app.route('/')
     def index():
-        return render_template("index.html", data="", _id=_id.to_ascii())
+        return render_template("publisher.html", data="", _id=_id.to_ascii())
 
 
     # Publish client's data to the server
@@ -39,18 +39,17 @@ def main(argv): # Takes as arguments the publisher network information from term
         message = request.form.get("message") # Get user input from GUI
 
         if message: # Check if message is empty
-            msg = EncryptMessage(message = message , chunk_size = CHUNK_SIZE) # Instanciate the EncryptMessage class
+            msg = Message(message = message , chunk_size = CHUNK_SIZE) # Instanciate the Message class
             encrypted_chunks = msg.encrypt(_id = _id.to_bipolar()) # Encrypt the message by embedding the ID
 
-            for index, chunk in enumerate(encrypted_chunks): # encrypted_chunks is a list of all encrypted chunks 
-                data = (index, chunk)
-                response = requests.post(url, json = json.dumps(data, cls=NpEncoder)) # Post each chunk
+            for chunk in encrypted_chunks: # encrypted_chunks is a list of all encrypted chunks 
+                response = requests.post(url, json = json.dumps(chunk, cls=NpEncoder)) # Post each chunk
                 print(response.text) # Server replies back "Chunk received!"
 
-            return render_template("index.html", data="Successful publish of message.", _id=_id.to_ascii())
+            return render_template("publisher.html", data="Successful publish of message.", _id=_id.to_ascii())
 
         else:
-            return render_template("index.html", data="Write a message to send!", _id=_id.to_ascii())
+            return render_template("publisher.html", data="Write a message to send!", _id=_id.to_ascii())
 
 
 

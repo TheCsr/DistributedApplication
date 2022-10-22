@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriber</title>
+</head>
+<body>
+    <h1>SUBSCRIBER ID: {{ _id }}</h1>
+
+    <div class="center">
+        <span>Subscribe to client</span>
+        <form action="/subscribe" method="get">
+          <div class="inputbox">
+              <input type="text" name="message" maxlength = "1000" minlength="0">
+          </div>
+          <div class="inputbox">
+            <input type="submit" value="submit">
+          </div>
+        </form>
+    </div>
+
+    <h1>{{ data }}</h1>
+
+
+</body>
+</html>
