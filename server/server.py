@@ -15,6 +15,8 @@ THRESHOLD = 10
 
 global map_table
 
+
+
 map_table = {}
 
 
@@ -46,7 +48,7 @@ def save_data():
             N += 1 # Increment number of entries in the table
             map_table[N] = {"key": chunk, "data": [chunk]} # Create a new entry with the new chunk as a key
 
-        print(max_sim)
+        
     
     count_data = {k: len(v["data"]) for (k, v) in map_table.items()}
     print(count_data)
@@ -66,8 +68,9 @@ def get_data():
         Retrieve data from database using KEY
         return data chunks to the client
     """
+    _id_ascii = json.loads(request.get_json())
+    print(_id_ascii)
     
-    pass
 
 
 if __name__ == "__main__":

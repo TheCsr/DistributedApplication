@@ -37,13 +37,14 @@ def main(argv): # Takes as arguments the publisher network information from term
     def subscribe():
         #requested_id = request.form.get("requested_id") # Get user input from GUI
         requested_id = "109_106_83_75_33_61_83_98_29_78_54_50_45_8_54_22_8_4_102_90_64_60_22_103_58_80_85_125_15_103_25_35_122_117_99_21_104_37_116_67_6_66_48_33_123_39_0_15_45_72_2_104_56_114_81_54_49_25_123_95_28_108_55_93_126_54_21_82_8_74_26_20_43_78_25_27_70_86_6_39_104_15_25_57_99_106_71_108_100_12_62_73_40_56_70_114_116_99_66_67_43_66_81_36_18_110_99_80_127_27_91_82_96_16_45_72_5_8_39_94_84_111_17_81_37_111_113_101_32_78_118_1_18_60_54_77_43_42_16_96_50_78_18"
-        url = f"http://{SERVER_ADDRESS}:{SERVER_PORT}/getData?id={requested_id}" # Define the server's URL + endpoint
+        url = f"http://{SERVER_ADDRESS}:{SERVER_PORT}/getData" # Define the server's URL + endpoint
         
-        if requested_id:
-            print(requested_id)
+        if requested_id:    
+            response = requests.get(url, json = json.dumps(requested_id, cls=NpEncoder)) # Post each chunk
+
 
         return render_template("subscriber.html")
-        
+
         """
         if message: # Check if message is empty
             msg = Message(message = message , chunk_size = CHUNK_SIZE) # Instanciate the Message class
