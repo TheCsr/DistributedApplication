@@ -21,9 +21,12 @@ global map_table
 map_table = []
 
 def create_connection(db_file):
-    client = pymongo.MongoClient("mongodb+srv://<username>:abcd1234@cluster0.spfiabd.mongodb.net/?retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongodb+srv://thecsr:abcd1234@cluster0.spfiabd.mongodb.net/?retryWrites=true&w=majority")
     mydb = client[db_file]
     return mydb
+
+def update_tags(coll, id, new_tag):
+    coll.update_one({'ids': id}, {'$push': {'data': new_tag}})
 
 
 @app.route('/sendData', methods=['POST'])
@@ -44,7 +47,8 @@ def save_data():
     
     if not N: # Check number of entries
         N += 1
-        map_table.append({ "id": N-1 ,"key": chunk, "data": [chunk]}) # Add the first entry of the table
+        map_table.append({ "ids": N-1 ,"key": chunk, "data": [chunk]}) # Add the first entry of the 
+        mycol.insert_one({ "ids": N-1 ,"key": chunk, "data": [chunk]})
 
     else:
         entries = map_table # Get entries e.g entry = {1: {"key": [list], "data": [[list of lists]] }}
@@ -55,9 +59,12 @@ def save_data():
 
         if max_sim > THRESHOLD: # Check if max_sim value is above threshold
             map_table[max_sim_entry-1]["data"].append(chunk) # Append chunk data to the key that gives highest similarity (max_sim_key)
+            update_tags(mycol, int(max_sim_entry-1), chunk )
+            
         else:
             N += 1 # Increment number of entries in the table
-            map_table.append({"id": N-1 ,"key": chunk, "data": [chunk]}) # Create a new entry with the new chunk as a key
+            map_table.append({"ids": N-1 ,"key": chunk, "data": [chunk]}) # Create a new entry with the new chunk as a key
+            mycol.insert_one({"ids": N-1 ,"key": chunk, "data": [chunk]})
 
         
     
