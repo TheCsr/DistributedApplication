@@ -61,6 +61,7 @@ def get_data():
     if N:
         keys = [ entry["key"] for entry in entries] # Get keys from map table (list of lists)        
         bipolar_target_id = json.loads(request.get_json()) # Handle the received bipolar ID from client through the GET request
+        
         print(f"There are {N} entries in the database.")
         # Compute similarity degree of DOT product between KEYS and Id
         print(f"Computing similarity for requested ID and map table keys: ")
