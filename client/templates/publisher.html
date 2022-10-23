@@ -1,28 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publisher</title>
-</head>
-<body>
-    <h1>PUBLISHER ID: {{ _id }}</h1>
+<html>
+    <head>
+        <title>Publisher</title>
+    </head>
 
-    <div class="center">
-        <span>Message to publish</span>
-        <form action="/publish" method="post">
-          <div class="inputbox">
-              <input type="text" name="message" maxlength = "1000" minlength="0">
-          </div>
-          <div class="inputbox">
-            <input type="submit" value="submit">
-          </div>
+    <style>
+
+      /*.background-image{
+          background-image: url('./publishing-translation.jpg');
+          background-size: contain;
+          background-repeat: no-repeat;
+          height: 200px;
+          width:  200px;
+
+      }*/
+
+      input[type=text] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px 20px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px; 
+      box-sizing: border-box;
+      font-size: 16px;
+      resize: none;
+    }
+
+    input[type=submit] {
+      width: 20%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    input[type=submit]:hover {
+      background-color: #45a049;
+    }
+
+    div {
+      width: 30%;
+      border-radius: 5px;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+  </style>
+
+    <body>
+     <!--  <div class = "background-image"> -->
+      <center>
+        <h1>Publisher</h1>
+        </center>
+    
+    <center>
+    <div>
+      
+        <form action = "/publish" method = "POST">
+
+         Your Generated ID : 
+         <br>
+         <input type = "text" name = "id" readonly value={{ _id }}>
+         <br>
+         Insert Your Data here:
+         <br>
+         <textarea rows = "5" cols = "50" name = "message" > </textarea>
+         <br>
+         <input type = "submit" name = "publish" value="PUBLISH"></input>
+     <br>
+
         </form>
+
     </div>
 
+    </center>
+<center>
+    <img src="{{url_for('static', filename='image.jpg')}}" >
+  </center>
+
     <h1>{{ data }}</h1>
-
-
-</body>
+<!-- </div> -->
+    </body>
 </html>
