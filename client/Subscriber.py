@@ -3,12 +3,15 @@ import json
 import requests
 import numpy as np
 import random
+import pandas as pd
 
 from flask import Flask, request, Response, render_template
-from Message import Message, NpEncoder
+from Decrypt import DecryptMessage, NpEncoder
 from Vector import Vector
 
-CHUNK_SIZE = 1001
+CHUNK_SIZE = 1000
+PADDING_SIZE = CHUNK_SIZE % 7
+DATA_SIZE = CHUNK_SIZE - PADDING_SIZE
 
 SERVER_ADDRESS = "127.0.0.1"
 SERVER_PORT = 8080
@@ -19,54 +22,90 @@ def main(argv): # Takes as arguments the publisher network information from term
 
     client_args = argv[0].split(":") # ["127.0.0.1", "5000"]
     CLIENT_ADDRESS = client_args[0] # Address
-    CLIENT_PORT = int(client_args[1]) # Port number
-    _id = Vector(np.array([ random.randint(0, 1) for i in range(CHUNK_SIZE)])) # Generate vector ID
-    print(f"My SUBSCRIBER ID in ASCII format is: {_id.to_ascii()}") 
+    CLIENT_PORT = client_args[1] # Port number
 
+    # We check saved ID associated to client IP address and PORT number
+    file_name= "./templates/subscribers.csv"
+
+    df = pd.read_csv(file_name, header=0, dtype=str) # Read df csv file
+    condition = (df['ip'] == CLIENT_ADDRESS) & (df['port'] == CLIENT_PORT) # Check if port & ip already exist in csv file
+    bool_val = condition.any() 
+
+    # No need to generate new ID
+    if bool_val: 
+        saved_str_id = df[condition].iloc[0]["id"] # Assign existing ID to client! 
+        saved_binary_id = [int(c) for c in saved_str_id]
+        _id = Vector(binary_vector= np.array(saved_binary_id)) # Generate vector ID
+
+    # New IP/port generate a new ID        
+    else: 
+
+        data_bits = CHUNK_SIZE % 7
+        random_id = [ random.randint(0, 1) for i in range(CHUNK_SIZE - data_bits)] + [1 for i in range(data_bits)]
+
+        _id = Vector(np.array(random_id)) # Generate vector ID
+        row = pd.DataFrame([{"ip":CLIENT_ADDRESS, "port":CLIENT_PORT, "id": _id.to_string()}])
+        df = pd.concat([df, row])
+        df.to_csv(file_name, index=False)
+
+
+    print(f"My SUBSCRIBER ID in string format is: {_id.to_string()}") 
     app = Flask(__name__) # Flask app
+
 
 
     # Render home page of publisher
     @app.route('/')
     def index():
-        return render_template("subscriber.html", data="", _id=_id.to_ascii())
+        return render_template("subscriber.html", data="", _id=_id.to_string())
 
 
     # Subscribe to client's data to the server
     @app.route('/subscribe', methods=['GET'])
     def subscribe():
-        #requested_id = request.form.get("requested_id") # Get user input from GUI
-        requested_id = "109_106_83_75_33_61_83_98_29_78_54_50_45_8_54_22_8_4_102_90_64_60_22_103_58_80_85_125_15_103_25_35_122_117_99_21_104_37_116_67_6_66_48_33_123_39_0_15_45_72_2_104_56_114_81_54_49_25_123_95_28_108_55_93_126_54_21_82_8_74_26_20_43_78_25_27_70_86_6_39_104_15_25_57_99_106_71_108_100_12_62_73_40_56_70_114_116_99_66_67_43_66_81_36_18_110_99_80_127_27_91_82_96_16_45_72_5_8_39_94_84_111_17_81_37_111_113_101_32_78_118_1_18_60_54_77_43_42_16_96_50_78_18"
-        url = f"http://{SERVER_ADDRESS}:{SERVER_PORT}/getData" # Define the server's URL + endpoint
-        
-        if requested_id:    
-            response = requests.get(url, json = json.dumps(requested_id, cls=NpEncoder)) # Post each chunk
+            url = f"http://{SERVER_ADDRESS}:{SERVER_PORT}/getData" # Define the server's URL + endpoint
+            #target_id_string = request.form.get("target_id") # Get user input from GUI
 
 
-        return render_template("subscriber.html")
+            
+            target_id_string = "1101111000000011011000001111101100000001000100101000101111010110001011111110101000011100100001010100010000010111100101110011110011001001000110100101111101010100100101011110100110011010011110101101001010110000010001011111101111001011111001011010001111100010000011011001001001011010100100011101101010110011000001110110100101101111111110101001100100000101110000000011010001000000011001001111010000000111111101001000000101110111000010010111101000001110011111100000111111111010000001101100000100011001001001111010111101100110000110101001010010111111011101111000110010100000000100011000000100010001010000001110100000100001001100000101010111100000101000111011110111110111001110000010000110010101111011110010001001011110001010001001101001100000101010001100110111010010011011101000000010101110110011011000110000111101010001111111100100110010100011101010010111111010100000001111111000100011101101001111000100110110111101101100100000110000100000010010101010111110101000110110010000000010111110100110011100001110"
+            if target_id_string:
+                # Handle the ID_ASCI values and transform it into a BIPOLAR vector! 
+                target_id = Vector(binary_vector= np.array([int(b) for b in target_id_string]) ) # Transform ascii to binary then a Vector object
+                response = requests.get(url, json = json.dumps(target_id.to_bipolar(), cls=NpEncoder)) # Post bipolar ID to server
+                payload = json.loads(response.text)
+                
+                if "messages" in payload:
+                    msg = DecryptMessage(encrypted_chunks=payload["messages"], chunk_size=CHUNK_SIZE)
+                    decrypted_messages = msg.decrypt(_id=target_id.to_bipolar()) 
+                    return render_template("subscriber.html", data=decrypted_messages, _id=_id.to_string())
+                else:
+                    return render_template("subscriber.html", data="Nothing to return", _id=_id.to_string())
 
-        """
-        if message: # Check if message is empty
-            msg = Message(message = message , chunk_size = CHUNK_SIZE) # Instanciate the Message class
-            encrypted_chunks = msg.encrypt(_id = _id.to_bipolar()) # Encrypt the message by embedding the ID
-
-            for chunk in encrypted_chunks: # encrypted_chunks is a list of all encrypted chunks 
-                response = requests.post(url, json = json.dumps(chunk, cls=NpEncoder)) # Post each chunk
-                print(response.text) # Server replies back "Chunk received!"
-
-            return render_template("publisher.html", data="Successful publish of message.", _id=_id.to_ascii())
-
-        else:
-            return render_template("publisher.html", data="Write a message to send!", _id=_id.to_ascii())
-        """
-
-
+    app.run(debug=True, host=CLIENT_ADDRESS, port=int(CLIENT_PORT))
 
 
-
-    app.run(debug=True, host=CLIENT_ADDRESS, port=CLIENT_PORT)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+"""
+if message: # Check if message is empty
+    msg = Message(message = message , chunk_size = CHUNK_SIZE) # Instanciate the Message class
+    encrypted_chunks = msg.encrypt(_id = _id.to_bipolar()) # Encrypt the message by embedding the ID
+
+    for chunk in encrypted_chunks: # encrypted_chunks is a list of all encrypted chunks 
+        response = requests.post(url, json = json.dumps(chunk, cls=NpEncoder)) # Post each chunk
+        print(response.text) # Server replies back "Chunk received!"
+
+    return render_template("publisher.html", data="Successful publish of message.", _id=_id.to_ascii())
+
+else:
+    return render_template("publisher.html", data="Write a message to send!", _id=_id.to_ascii())
+"""
+
+
+
+
 
 

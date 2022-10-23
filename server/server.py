@@ -14,86 +14,73 @@ SERVER_PORT = 8080
 THRESHOLD = 10
 
 
-global map_table
+""" database initilization"""
+db_name = "myDatabase"
+mydb = create_connection(db_name)
+COLLECTION_NAME = "PubSubData"
 
 
-
-map_table = []
-
-#create connection with the mongodb
-
-def create_connection(db_file):
-    client = pymongo.MongoClient("mongodb+srv://thecsr:abcd1234@cluster0.spfiabd.mongodb.net/?retryWrites=true&w=majority")
-    mydb = client[db_file]
-    return mydb
-
-# function to update the database document i.e in our case update the data list with new chunk
-
-def update_tags(coll, id, new_tag):
-    coll.update_one({'ids': id}, {'$push': {'data': new_tag}})
-
-
+# Handle the received data from the client
 @app.route('/sendData', methods=['POST'])
 def save_data():
-    """
-        Handle the received data from the client
-        Check if table is empty
-        GET all keys
-    """
-    """ database initilization"""
-    database = "myDatabase"
-    mydb = create_connection(database)
-    
-    mycol = mydb["myCollection"]
-    
-    N = len(map_table) # Number of entries
-    chunk = json.loads(request.get_json())
-    
+    collection = mydb[COLLECTION_NAME] # Get collection
+    entries = [ doc for doc in collection.find()] # Retrieve all documents within the collection
+    N = len(entries) # Number of entries in database == Number of total documents
+    keys = [ entry["key"] for entry in entries] # Get keys from map table (list of lists)        
+
+    chunk = json.loads(request.get_json()) # Chunk received from publisher
     if not N: # Check number of entries
         N += 1
-        map_table.append({ "ids": N-1 ,"key": chunk, "data": [chunk]}) # Add the first entry of the 
-        mycol.insert_one({ "ids": N-1 ,"key": chunk, "data": [chunk]})   #add the first entry to the database
-
+        collection.insert_one({ "entry_id": N ,"key": chunk, "data": [chunk]})   #add the first entry to the database
     else:
-        entries = map_table # Get entries e.g entry = {1: {"key": [list], "data": [[list of lists]] }}
-        keys = [ entry["key"] for entry in entries] # Get keys from map table (list of lists)
-
         # Compute similarity chunk with respect to all keys in table
-        max_sim, max_sim_key, max_sim_entry = maximum_similarity(chunk=np.array(chunk), keys= np.array(keys))
-
-        if max_sim > THRESHOLD: # Check if max_sim value is above threshold
-            map_table[max_sim_entry-1]["data"].append(chunk) # Append chunk data to the key that gives highest similarity (max_sim_key)
-            update_tags(mycol, int(max_sim_entry-1), chunk )   #updating the database document with new chucks
-             
+        max_similarity, entry_id = compute_similarity(vector=np.array(chunk), keys=np.array(keys))
+        if max_similarity > THRESHOLD: # Check if similarity value is above threshold
+            print(max_similarity)
+            update_tags(collection, entry_id, chunk)  # Append chunk data to the key that gives highest similarity (max_sim_key)
         else:
             N += 1 # Increment number of entries in the table
-            map_table.append({"ids": N-1 ,"key": chunk, "data": [chunk]}) # Create a new entry with the new chunk as a key
-            mycol.insert_one({"ids": N-1 ,"key": chunk, "data": [chunk]}) #creating a new document if max_sim < threashold
+            collection.insert_one({"entry_id": N ,"key": chunk, "data": [chunk]}) #creating a new document if max_sim < threashold
 
-        
-    
-    # count_data = {k: len(v["data"]) for (k, v) in map_table}
-    count_data = {map_table.index(item): len(item["data"]) for item in map_table}
+    # Print count of data chunks saved in db with respect to each entry
+    collection = mydb[COLLECTION_NAME] # Get collection
+    entries = [ doc for doc in collection.find()] # Retrieve all documents within the collection
+    count_data = {entry["entry_id"]: len(entry["data"]) for entry in entries}
     print(count_data)
-    print(map_table)
 
     return Response(response=json.dumps("Chunk received"), mimetype="application/json", status=200)
 
 
+# Send messages to subscribers
 @app.route('/getData', methods=['GET'])
 def get_data():
-    """
-        Check if data base is empty or not
-        Retrieve all registered keys
-        Handle the received ascii ID from client through the GET request
-        Trasnform ASCII Id into a bipolar vector
-        Compute similarity degree of DOT product between KEYS and Id
-        Select KEY with highest value
-        Retrieve data from database using KEY
-        return data chunks to the client
-    """
-    _id_ascii = json.loads(request.get_json())
-    print(_id_ascii)
+    collection = mydb[COLLECTION_NAME] # Get collection
+    entries = [ doc for doc in collection.find()] # Retrieve all documents within the collection
+    N = len(entries) # Number of entries in database == Number of total documents
+
+    if N:
+        keys = [ entry["key"] for entry in entries] # Get keys from map table (list of lists)        
+        bipolar_target_id = json.loads(request.get_json()) # Handle the received bipolar ID from client through the GET request
+        print(f"There are {N} entries in the database.")
+        # Compute similarity degree of DOT product between KEYS and Id
+        print(f"Computing similarity for requested ID and map table keys: ")
+        max_similarity, entry_id = compute_similarity(vector=np.array(bipolar_target_id), keys=np.array(keys))
+
+        if max_similarity > THRESHOLD: # if ID corresponds to KEY
+            my_query = {"entry_id": entry_id} # Query sent to database 
+            target_entry = collection.find_one(my_query) # Find document which corresponds to entry with highest similarity
+            print(f"The ID sent corresponds to entry {entry_id}") 
+            messages = target_entry["data"] # From the entry selected, return the messages ("data" as key)
+            print(f"The number of messages returned is: {len(messages)}")
+            return Response(response=json.dumps({"messages": messages}), mimetype="application/json", status=200)
+
+        else: # if ID does not correspond to any key
+            return {"response": "Your id does not correspond to any key in database" }
+    else:
+        return {"response": "Data base is empty! Nothing to subscribe to!"}
+
+
+    
     
 
 

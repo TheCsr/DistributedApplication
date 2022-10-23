@@ -1,25 +1,28 @@
 import numpy as np
+import pymongo
+
+#create connection with the mongodb
+def create_connection(db_file):
+    client = pymongo.MongoClient("mongodb+srv://thecsr:abcd1234@cluster0.spfiabd.mongodb.net/?retryWrites=true&w=majority")
+    mydb = client[db_file]
+    return mydb
+
+# function to update the database document i.e in our case update the data list with new chunk
+def update_tags(coll, entry_id, new_tag):
+    coll.update_one({'entry_id': entry_id}, {'$push': {'data': new_tag}})
 
 
+def compute_similarity(vector:np.array, keys:np.array) -> tuple:
+    similarity_vector = list(np.dot(keys, vector)) # Compute similarity values with dot product
+    for idx, val in enumerate(similarity_vector):
+        print(f"Similarity value for entry {idx+1} is {val}")
 
-def maximum_similarity(chunk:np.array, keys: np.array):
-    similarity_vector = np.dot(keys, chunk) # Compute similarity vector by using DOT product
-    max_sim = max(similarity_vector) # Get the highest similarity value
-    max_sim_idx = np.where(similarity_vector == max_sim)
-    max_sim_entry = max_sim_idx[0][0] + 1
-    max_sim_key = keys[max_sim_idx][0] # Key with highest similarity value
-    return max_sim, max_sim_key, max_sim_entry
+    max_similarity = max(similarity_vector) # Get highest similarity value 
+    idx = similarity_vector.index(max_similarity) # Get index (or entry number) of key with highest similarity
+    #selected_key = keys[idx] # Retreive the key
+    entry_id = idx+1
+    return max_similarity, entry_id # Return (highest similarity, entry number, corresponding key)
 
-
-def match_id_to_key(_id:np.array, keys: np.array):
-    """
-    This function computes the DOT product of the received ID to all the keys
-    """
-    similarity_vector = np.dot(keys, _id)
-    highest_similarity = max(similarity_vector)
-    best_key_idx = np.where( similarity_vector == highest_similarity)
-    best_key = keys[best_key_idx]
-    return best_key
 
 
 
