@@ -28,11 +28,11 @@ class DecryptMessage:
                     if charac == "1":
                         break
                 decrypted_chunk = decrypted_chunk[:(data_size-n_zeros)]
-                binary_data.append(decrypted_chunk)        
+                binary_data.append(decrypted_chunk)
             else:
                 decrypted_chunk = decrypted_chunk[:data_size]
                 binary_data.append(decrypted_chunk)
-
+        print("bianry dat",binary_data)
         binary_string = "".join(binary_data)
         decrypted_messages = to_ascii(binary_string, len(binary_string))
         return decrypted_messages

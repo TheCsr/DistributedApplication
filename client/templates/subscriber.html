@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Publisher</title>
+        <title>Subscriber</title>
     </head>
 
     <style>
@@ -14,6 +14,12 @@
           width:  200px;
 
       }*/
+      body{ 
+        background-image:url('https://wallpaperaccess.com/full/924077.jpg'); 
+        background-size: cover;
+        background-repeat: no-repeat;
+
+  }
 
       input[type=text] {
       width: 100%;
@@ -53,6 +59,14 @@
       background-color: #45a049;
     }
 
+    select {
+      width:250px;   
+    }
+
+    #compSelect option {
+      width:15px;   
+    }
+
     div {
       width: 30%;
       border-radius: 5px;
@@ -65,21 +79,26 @@
     <body>
      <!--  <div class = "background-image"> -->
       <center>
-        <h1>Publisher</h1>
+        <h1>Subscriber</h1>
         </center>
     
     <center>
     <div>
       
-        <form action = "/subscribe" method = "GET">
+        <form action = "/subscribe" method = "POST">
 
          Select the id : 
          <br>
-         <input type = "text" name = "id">
+         <!-- <input type = "text" name = "id"> -->
+         <select name="compSelect">
+          {% for list in listOfList %}
+            <option value= "{{ list }}" SELECTED="{{ item }}">{{ list }}</option>
+          {% endfor %}
+         </select>
          <br>
          Received Message:
          <br>
-         <textarea rows = "5" cols = "50" name = "message" value={{data}}> </textarea>
+         <textarea rows = "5" cols = "50" name = "message" value={{ data }}>{{ data }} </textarea>
          <br>
          <input type = "submit" name = "publish" value="PUBLISH"></input>
      <br>
@@ -89,9 +108,9 @@
     </div>
 
     </center>
-<center>
+<!-- <center>
     <img src="{{url_for('static', filename='image.jpg')}}" >
-  </center>
+  </center> -->
 
     <h1>{{ data }}</h1>
 <!-- </div> -->
