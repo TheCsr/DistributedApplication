@@ -86,10 +86,12 @@
          <br>
          Insert Your Data here:
          <br>
-         <textarea rows = "5" cols = "50" name = "message" > </textarea>
+         <textarea rows = "5" cols = "50" name = "message" >  </textarea>
          <br>
-         <input type = "submit" name = "publish" value="PUBLISH"></input>
+         <input type = "submit" name = "publish" value="PUBLISH"> </input>
      <br>
+          
+        {{ data }}
 
         </form>
 
@@ -100,7 +102,7 @@
     <img src="{{url_for('static', filename='image.jpg')}}" >
   </center> -->
 
-    <h1>{{ data }}</h1>
-<!-- </div> -->
+
+  <!-- </div> -->
     </body>
 </html>
