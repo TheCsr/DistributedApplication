@@ -19,17 +19,18 @@ SERVER_PORT = 8080
 globalList = []
 
 def createListofCsv():
-    with open('/home/thecsr/GENIAL/Mini Project/DistributedApplication/client/templates/publishers.csv') as csv_file:
+    with open('./templates/publishers.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
-        list=[]
+        lst=[]
         for row in csv_reader:
             if line_count == 0:
                 line_count += 1
             else:
-                list.append(row[2])
+                lst.append(row)
                 line_count += 1
-        return list
+
+        return lst
 
 
 def main(argv): # Takes as arguments the publisher network information from terminal e.g python Publisher.py 127.0.0.1:5000
@@ -40,10 +41,6 @@ def main(argv): # Takes as arguments the publisher network information from term
 
     # We check saved ID associated to client IP address and PORT number
     file_name= "./templates/subscribers.csv"
-    listOfDropdown = createListofCsv()
-    globalList = listOfDropdown
-
-
     df = pd.read_csv(file_name, header=0, dtype=str) # Read df csv file
     condition = (df['ip'] == CLIENT_ADDRESS) & (df['port'] == CLIENT_PORT) # Check if port & ip already exist in csv file
     bool_val = condition.any() 
@@ -73,6 +70,11 @@ def main(argv): # Takes as arguments the publisher network information from term
     # Render home page of publisher
     @app.route('/')
     def index():
+
+
+        listOfDropdown = createListofCsv()
+        globalList = listOfDropdown
+
         return render_template("subscriber.html", data="", _id=_id.to_string(), listOfList = globalList)
 
 

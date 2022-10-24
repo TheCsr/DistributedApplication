@@ -45,7 +45,7 @@ def main(argv): # Takes as arguments the publisher network information from term
         df = pd.concat([df, row])
         df.to_csv(file_name, index=False)
 
-    print(f"My PUBLISHER ID in string format is: {_id.to_string()}") 
+    print(f"My PUBLISHER ID in string format is: {_id.to_ascii()}") 
 
     app = Flask(__name__) # Flask app
 
@@ -53,7 +53,7 @@ def main(argv): # Takes as arguments the publisher network information from term
     # Render home page of publisher
     @app.route('/')
     def index():
-        return render_template("publisher.html", data="", _id=_id.to_string())
+        return render_template("publisher.html", data="", _id=_id.to_ascii())
 
 
     # Publish client's data to the server
@@ -70,17 +70,18 @@ def main(argv): # Takes as arguments the publisher network information from term
                 response = requests.post(url, json = json.dumps(chunk, cls=NpEncoder)) # Post each chunk
                 print(response.text) # Server replies back "Chunk received!"
 
-            return render_template("publisher.html", data="Successful publish of message.", _id=_id.to_string())
+            return render_template("publisher.html", data="Successful publish of message.", _id=_id.to_ascii())
 
         else:
-            return render_template("publisher.html", data="Write a message to send!", _id=_id.to_string())
+            print("haha")
+            return render_template("publisher.html", data="Write a message to send!", _id=_id.to_ascii())
 
 
 
 
 
 
-    app.run(debug=False, host=CLIENT_ADDRESS, port=int(CLIENT_PORT))
+    app.run(debug=True, host=CLIENT_ADDRESS, port=int(CLIENT_PORT))
 
 if __name__ == "__main__":
     main(sys.argv[1:])

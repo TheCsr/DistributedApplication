@@ -91,8 +91,8 @@
          <br>
          <!-- <input type = "text" name = "id"> -->
          <select name="compSelect">
-          {% for list in listOfList %}
-            <option value= "{{ list }}" SELECTED="{{ item }}">{{ list }}</option>
+          {% for lst in listOfList %}
+            <option value= "{{ lst[2] }}" SELECTED="{{ item }}">{{ lst[0] + ":" + lst[1]  }}</option>
           {% endfor %}
          </select>
          <br>
@@ -100,7 +100,7 @@
          <br>
          <textarea rows = "5" cols = "50" name = "message" value={{ data }}>{{ data }} </textarea>
          <br>
-         <input type = "submit" name = "publish" value="PUBLISH"></input>
+         <input type = "submit" name = "Subscribe" value="SUBSCRIBE"></input>
      <br>
 
         </form>
