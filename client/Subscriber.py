@@ -14,10 +14,9 @@ CHUNK_SIZE = 1000
 PADDING_SIZE = CHUNK_SIZE % 7
 DATA_SIZE = CHUNK_SIZE - PADDING_SIZE
 
-SERVER_ADDRESS = "127.0.0.1"
+SERVER_ADDRESS = "13.48.104.200"
 SERVER_PORT = 8080
 globalList = []
-bsda="Hello"
 
 def createListofCsv():
     with open('/home/thecsr/GENIAL/Mini Project/DistributedApplication/client/templates/publishers.csv') as csv_file:
