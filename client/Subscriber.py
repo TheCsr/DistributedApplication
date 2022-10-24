@@ -14,7 +14,7 @@ CHUNK_SIZE = 1000
 PADDING_SIZE = CHUNK_SIZE % 7
 DATA_SIZE = CHUNK_SIZE - PADDING_SIZE
 
-SERVER_ADDRESS = "13.48.104.200"
+SERVER_ADDRESS = "127.0.0.1"
 SERVER_PORT = 8080
 globalList = []
 
@@ -97,9 +97,9 @@ def main(argv): # Takes as arguments the publisher network information from term
                 if "messages" in payload:
                     msg = DecryptMessage(encrypted_chunks=payload["messages"], chunk_size=CHUNK_SIZE)
                     decrypted_messages = msg.decrypt(_id=target_id.to_bipolar())
-                    return render_template("subscriber.html", data=decrypted_messages, _id=_id.to_string())
+                    return render_template("subscriber.html", data=decrypted_messages, _id=_id.to_string(), listOfList = globalList)
                 else:
-                    return render_template("subscriber.html", data="Nothing to return", _id=_id.to_string())
+                    return render_template("subscriber.html", data="Nothing to return", _id=_id.to_string(), listOfList = globalList)
 
     app.run(debug=True, host=CLIENT_ADDRESS, port=int(CLIENT_PORT))
 
