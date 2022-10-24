@@ -2,7 +2,7 @@
 
 Luleå University of Technology
 
-Course: D7001D
+Course: D7001D - Network Programming and Distributed  Applications
 
 Instructor: Dr. Evgeny Osipov
 
